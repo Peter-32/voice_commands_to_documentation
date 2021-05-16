@@ -16,7 +16,6 @@ import time
 import wave
 import pandas as pd
 import pyperclip as clip
-
 import pyaudio
 import pyautogui as g
 import pyperclip as clip
@@ -110,28 +109,29 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100 
 messages = ["Describe the idea informally as if describing it to a friend",
-"Explain which actionable metric you expect to improve from this idea",
-"List any assumptions that have led you to find this idea as a priority idea",
-"List any assumptions that will help you solve the problem quicker",
-"Has something similar been worked on, and what was the result",
-"Why do we think this idea solves a user problem",
-"What are the benefits of this idea",
-"How will this feature be used by the user",
-"What is a workaround to solving this problem without building the feature",
-"What relevant data is in the data warehouse already",
-"What relevant data do you want to place into the data warehouse",
-"Would this data come from either tracking servers, APIs, web scraping, or sensor data",
-"What data should not be used",
-"What data system would best store each new dataset",
-"What data should be encrypted to reduce the risk of hackers or being sued",
-"In what way will the data still be messy and need to be cleaned up",
-"Steps that will be taken to ensure the accuracy of the data involved",
-"The status of the idea and the result",
-"Information to help with the maintenance of the feature",
-"Information to help sales/marketing promote the feature",
-"Information to help support or users troubleshoot frequently asked questions",
-"Meeting summaries and action items",
-"You're done, you can find the documentation saved in your clipboard or in the project's data directory"]
+# "Explain which actionable metric you expect to improve from this idea",
+# "List any assumptions that have led you to find this idea as a priority idea",
+# "List any assumptions that will help you solve the problem quicker",
+# "Has something similar been worked on, and what was the result",
+# "Why do we think this idea solves a user problem",
+# "What are the benefits of this idea",
+# "How will this feature be used by the user",
+# "What is a workaround to solving this problem without building the feature",
+# "What relevant data is in the data warehouse already",
+# "What relevant data do you want to place into the data warehouse",
+# "Would this data come from either tracking servers, APIs, web scraping, or sensor data",
+# "What data should not be used",
+# "What data system would best store each new dataset",
+# "What data should be encrypted to reduce the risk of hackers or being sued",
+# "In what way will the data still be messy and need to be cleaned up",
+# "Steps that will be taken to ensure the accuracy of the data involved",
+# "The status of the idea and the result",
+# "Information to help with the maintenance of the feature",
+# "Information to help sales/marketing promote the feature",
+# "Information to help support or users troubleshoot frequently asked questions",
+# "Meeting summaries and action items",
+# "You're done, you can find the documentation saved in your clipboard or in the project's data directory"]
+           ]
 responses = []
 
 for message in messages:
@@ -173,7 +173,7 @@ file = open(documentation_file, 'w')
 file.write(documentation_output)
 file.close()
 
-print(documentation_output)
+exit(1)
 
 
 # In[ ]:

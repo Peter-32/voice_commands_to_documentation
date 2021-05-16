@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[2]:
 
 
 import os
@@ -15,6 +15,7 @@ import pyttsx3
 import time
 import wave
 import pandas as pd
+import pyperclip as clip
 
 import pyaudio
 import pyautogui as g
@@ -29,6 +30,7 @@ current_directory = os.path.dirname(os.path.realpath("__file__")) + "/"
 data_directory = os.path.join(current_directory, 'data')
 wav_file = f"{data_directory}/new_recording.wav"
 ideas_file = f"{data_directory}/ideas.csv"
+documentation_file = os.path.join(data_directory, 'documentation.md')
 current_directory, data_directory
 
 def callback(in_data, frame_count, time_info, status):
@@ -102,20 +104,37 @@ def speak_text(text):
     engine.iterate()
     time.sleep(0.10*len(text))
     engine.endLoop()
-    
-def append_ideas_to_list(text):
-    if text == "":
-        return
-    df = pd.read_csv(ideas_file)
-    new_row = pd.DataFrame({'Ideas': [text], 'Priority': [''], 'Status': ['Backlog'], 'Notes': ['']})
-    df = df.append(new_row)
-    df.to_csv(ideas_file, index=False)
 
 CHUNK = 8192
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100 
-while True:
+messages = ["Describe the idea informally as if describing it to a friend",
+"Explain which actionable metric you expect to improve from this idea",
+"List any assumptions that have led you to find this idea as a priority idea",
+"List any assumptions that will help you solve the problem quicker",
+"Has something similar been worked on, and what was the result",
+"Why do we think this idea solves a user problem",
+"What are the benefits of this idea",
+"How will this feature be used by the user",
+"What is a workaround to solving this problem without building the feature",
+"What relevant data is in the data warehouse already",
+"What relevant data do you want to place into the data warehouse",
+"Would this data come from either tracking servers, APIs, web scraping, or sensor data",
+"What data should not be used",
+"What data system would best store each new dataset",
+"What data should be encrypted to reduce the risk of hackers or being sued",
+"In what way will the data still be messy and need to be cleaned up",
+"Steps that will be taken to ensure the accuracy of the data involved",
+"The status of the idea and the result",
+"Information to help with the maintenance of the feature",
+"Information to help sales/marketing promote the feature",
+"Information to help support or users troubleshoot frequently asked questions",
+"Meeting summaries and action items",
+"You're done, you can find the documentation saved in your clipboard or in the project's data directory"]
+responses = []
+
+for message in messages:
     p = pyaudio.PyAudio()
     frames = []
     listener = MyListener()
@@ -124,17 +143,37 @@ while True:
     stream = None
     print("Press and hold the 'ctrl' key to begin recording")
     print("Release the 'ctrl' key to end recording")
+    speak_text(message)
     task = sched.scheduler(time.time, time.sleep)
     task.enter(0.1, 1, recorder, ())
     task.run()
-    command = react_to_recording()
-    command = "" if command == None else command.lower()
-    response = command
-    append_ideas_to_list(response)
-    # speak_text(response)
+    response = react_to_recording()
+    response = "" if response == None else response.lower()
+    responses.append(response)
     previously_listening = False
     
 
+
+# Build the documentation
+string_builder = []
+string_builder.append(f"# README\n")
+for message, response in zip(messages[:-1], responses[:-1]):
+    response = response.capitalize()
+    response = response.replace(" i ", " I ").replace(" i'", " I'")
+    response = response if not response.startswith("i ") else "I " + response[2:]
+    string_builder.append(f"### {message}\n")
+    string_builder.append(f"{response}\n")
+documentation_output = "\n".join(string_builder)
+
+# Save to clipboard
+clip.copy(documentation_output)
+
+# Write the file
+file = open(documentation_file, 'w')
+file.write(documentation_output)
+file.close()
+
+print(documentation_output)
 
 
 # In[ ]:
